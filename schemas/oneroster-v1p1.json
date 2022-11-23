@@ -1,0 +1,1067 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2.0",
+    "title": "OneRoster 1.1",
+    "description": "OneRoster 1.1. API"
+  },
+  "host": "oneroster.us2.kimonocloud.com",
+  "basePath": "/ims/oneroster/v1p1",
+  "schemes": [
+    "https"
+  ],
+  "securityDefinitions": {
+    "OAuth2": {
+      "type": "oauth2",
+      "flow": "application",
+      "authorizationUrl": "https://api.kimonocloud.com/oauth/token",
+      "tokenUrl": "https://api.kimonocloud.com/oauth/token"
+    }
+  },
+  "security": [
+    {
+      "OAuth2": []
+    }
+  ],
+  "definitions": {
+    "Base": {
+      "type": "object",
+      "properties": {
+        "sourcedId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "dateLastModified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      }
+    },
+    "GUIDRef": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string"
+        },
+        "sourcedId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "AcademicSession": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Base"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "startDate": {
+              "type": "string",
+              "format": "date"
+            },
+            "endDate": {
+              "type": "string",
+              "format": "date"
+            },
+            "type": {
+              "type": "string"
+            },
+            "parent": {
+              "$ref": "#/definitions/GUIDRef"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GUIDRef"
+              }
+            },
+            "schoolYear": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "Org": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Base"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "identifier": {
+              "type": "string"
+            },
+            "parent": {
+              "$ref": "#/definitions/GUIDRef"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GUIDRef"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Enrollment": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Base"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "user": {
+              "$ref": "#/definitions/GUIDRef"
+            },
+            "class": {
+              "$ref": "#/definitions/GUIDRef"
+            },
+            "school": {
+              "$ref": "#/definitions/GUIDRef"
+            },
+            "role": {
+              "type": "string"
+            },
+            "primary": {
+              "type": "boolean"
+            },
+            "beginDate": {
+              "type": "string",
+              "format": "date"
+            },
+            "endDate": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        }
+      ]
+    },
+    "Course": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Base"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "schoolYear": {
+              "$ref": "#/definitions/GUIDRef"
+            },
+            "courseCode": {
+              "type": "string"
+            },
+            "grades": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "subjects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "subjectCodes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "resources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GUIDRef"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Class": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Base"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "classCode": {
+              "type": "string"
+            },
+            "classType": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "grades": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "subjects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "course": {
+              "$ref": "#/definitions/GUIDRef"
+            },
+            "school": {
+              "$ref": "#/definitions/GUIDRef"
+            },
+            "terms": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GUIDRef"
+              }
+            },
+            "subjectCodes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "periods": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "resources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GUIDRef"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "UserId": {
+      "type": "object",
+      "properties":{
+        "type": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Base"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string"
+            },
+            "userIds": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserId"
+              }
+            },
+            "enabledUser": {
+              "type": "boolean"
+            },
+            "givenName": {
+              "type": "string"
+            },
+            "familyName": {
+              "type": "string"
+            },
+            "middleName": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            },
+            "identifier": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "sms": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "agents": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GUIDRef"
+              }
+            },
+            "orgs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GUIDRef"
+              }
+            },
+            "grades": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "AcademicSessionResponse" : {
+      "type": "object",
+      "properties": {
+        "academicSession": {
+          "$ref": "#/definitions/AcademicSession"
+        }
+      }
+    },
+    "AcademicSessionsResponse" : {
+      "type": "object",
+      "properties": {
+        "academicSessions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AcademicSession"
+          }
+        }
+      }
+    },
+    "OrgResponse" : {
+      "type": "object",
+      "properties": {
+        "org": {
+          "$ref": "#/definitions/Org"
+        }
+      }
+    },
+    "OrgsResponse" : {
+      "type": "object",
+      "properties": {
+        "orgs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Org"
+          }
+        }
+      }
+    },
+    "EnrollmentResponse" : {
+      "type": "object",
+      "properties": {
+        "enrollment": {
+          "$ref": "#/definitions/Enrollment"
+        }
+      }
+    },
+    "EnrollmentsResponse" : {
+      "type": "object",
+      "properties": {
+        "enrollments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Enrollment"
+          }
+        }
+      }
+    },
+    "CourseResponse" : {
+      "type": "object",
+      "properties": {
+        "course": {
+          "$ref": "#/definitions/Course"
+        }
+      }
+    },
+    "CoursesResponse" : {
+      "type": "object",
+      "properties": {
+        "courses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Course"
+          }
+        }
+      }
+    },
+    "ClassResponse" : {
+      "type": "object",
+      "properties": {
+        "class": {
+          "$ref": "#/definitions/Class"
+        }
+      }
+    },
+    "ClassesResponse" : {
+      "type": "object",
+      "properties": {
+        "classes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Class"
+          }
+        }
+      }
+    },
+    "UserResponse" : {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "UsersResponse" : {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/orgs": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getAllOrgs",
+        "summary": "Return collection of orgs.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Orgs response",
+            "schema": {
+              "$ref": "#/definitions/OrgsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/orgs/{id}": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getOrg",
+        "summary": "Return specific org.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the org to get"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Org response",
+            "schema": {
+              "$ref": "#/definitions/OrgResponse"
+            }
+          }
+        }
+      }
+    },
+    "/schools": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getAllSchools",
+        "summary": "Return collection of Schools. A School is an instance of an Org.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Schools response",
+            "schema": {
+              "$ref": "#/definitions/OrgsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/schools/{id}": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getSchool",
+        "summary": "Return specific School.  A School is an instance of an Org.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the School to get"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "School response",
+            "schema": {
+              "$ref": "#/definitions/OrgResponse"
+            }
+          }
+        }
+      }
+    },
+    "/enrollments": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getAllEnrollments",
+        "summary": "Return collection of enrollments.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Enrollments response",
+            "schema": {
+              "$ref": "#/definitions/EnrollmentsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/enrollments/{id}": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getEnrollment",
+        "summary": "Return specific enrollment.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the enrollment to get"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Enrollment response",
+            "schema": {
+              "$ref": "#/definitions/EnrollmentResponse"
+            }
+          }
+        }
+      }
+    },
+    "/terms": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getAllTerms",
+        "summary": "Return collection of terms. A Term is an instance of an AcademicSession.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Terms response",
+            "schema": {
+              "$ref": "#/definitions/AcademicSessionsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/terms/{id}": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getTerm",
+        "summary": "Return specific term. A Term is an instance of an AcademicSession.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the term to get"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Term response",
+            "schema": {
+              "$ref": "#/definitions/AcademicSessionResponse"
+            }
+          }
+        }
+      }
+    },
+    "/academicSession": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getAllAcademicSessions",
+        "summary": "Return collection of all academic sessions.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Academic session response",
+            "schema": {
+              "$ref": "#/definitions/AcademicSessionsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/academicSession/{id}": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getAcademicSession",
+        "summary": "Return specific academic session.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the academic session to get"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Academic session response",
+            "schema": {
+              "$ref": "#/definitions/AcademicSessionResponse"
+            }
+          }
+        }
+      }
+    },
+    "/gradingPeriods": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getAllGradingPeriods",
+        "summary": "Return collection of grading periods. A grading period is an instance of an AcademicSession.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Grading periods response",
+            "schema": {
+              "$ref": "#/definitions/AcademicSessionsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/gradingPeriods/{id}": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getGradingPeriod",
+        "summary": "Return specific grading period. A grading period is an instance of an academic session.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the grading period to get"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Grading period response",
+            "schema": {
+              "$ref": "#/definitions/AcademicSessionResponse"
+            }
+          }
+        }
+      }
+    },
+    "/courses": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getAllCourses",
+        "summary": "Return collection of courses.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Courses response",
+            "schema": {
+              "$ref": "#/definitions/CoursesResponse"
+            }
+          }
+        }
+      }
+    },
+    "/courses/{id}": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getCourse",
+        "summary": "Return specific course.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the course to get"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Courses response",
+            "schema": {
+              "$ref": "#/definitions/CourseResponse"
+            }
+          }
+        }
+      }
+    },
+    "/classes": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getAllClasses",
+        "summary": "Return collection of classes.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Classes response",
+            "schema": {
+              "$ref": "#/definitions/ClassesResponse"
+            }
+          }
+        }
+      }
+    },
+    "/classes/{id}": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getClass",
+        "summary": "Return specific class.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the class to get"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Class response",
+            "schema": {
+              "$ref": "#/definitions/ClassResponse"
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getAllUsers",
+        "summary": "Return collection of users.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Users response",
+            "schema": {
+              "$ref": "#/definitions/UsersResponse"
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getUser",
+        "summary": "Return specific user.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the user to get"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "User response",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/teachers": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getAllTeachers",
+        "summary": "Return collection of teachers. A teacher is an instance of a user.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Teachers response",
+            "schema": {
+              "$ref": "#/definitions/UsersResponse"
+            }
+          }
+        }
+      }
+    },
+    "/teachers/{id}": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getTeacher",
+        "summary": "Return specific teacher. A teacher is an instance of a user.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the teacher to get"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Teacher response",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/schools/{schoolId}/teachers": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getTeachersForSchool",
+        "summary": "Return the collection of teachers teaching at this school.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "schoolId",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the school to get teachers"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Teachers response",
+            "schema": {
+              "$ref": "#/definitions/UsersResponse"
+            }
+          }
+        }
+      }
+    },
+    "/students": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getAllStudents",
+        "summary": "Return collection of students. A student is an instance of a user.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Students response",
+            "schema": {
+              "$ref": "#/definitions/UsersResponse"
+            }
+          }
+        }
+      }
+    },
+    "/students/{id}": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getStudent",
+        "summary": "Return specific student. A student is an instance of a user.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the student to get"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Student response",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/schools/{schoolId}/students": {
+      "get": {
+        "tags": [
+          "Rostering"
+        ],
+        "operationId": "getStudentsForSchool",
+        "summary": "Return the collection of students attending this school.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "schoolId",
+            "type": "string",
+            "required": true,
+            "description": "sourcedId of the school to get students"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Students response",
+            "schema": {
+              "$ref": "#/definitions/UsersResponse"
+            }
+          }
+        }
+      }
+    }
+  }
+}

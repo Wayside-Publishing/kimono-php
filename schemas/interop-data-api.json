@@ -1,0 +1,1919 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "2.0",
+        "title": "Interop Data API",
+        "description": "Interop Data APIs provide access to the data objects and events from Interop Cloud repositories and Integration repositories"
+    },
+    "basePath": "/v2/interop/data",
+    "host": "api.us2.kimonocloud.com",
+    "schemes": [
+        "https"
+    ],
+    "securityDefinitions": {
+        "Actor": {
+            "type": "oauth2",
+            "flow": "application",
+            "tokenUrl": "https://api.us2.kimonocloud.com/oauth/token"
+        }
+    },
+    "security": [
+        {
+            "Actor": []
+        }
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "definitions": {
+        "ErrorType": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "integer",
+                    "description": "Transport-layer status code"
+                },
+                "code": {
+                    "type": "string",
+                    "description": "Application-layer error code"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Error message"
+                },
+                "ext_message": {
+                    "type": "string",
+                    "description": "Extended error message"
+                },
+                "details": {
+                    "type": "string",
+                    "description": "Details that may assist in diagnosing this error"
+                }
+            }
+        },
+        "PagedDataResponseType": {
+            "type": "object",
+            "properties": {
+                "paging": {
+                    "type": "object",
+                    "properties": {
+                        "next": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "SingleObjectResponseType": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "$ref": "#/definitions/ErrorType"
+                }
+            }
+        },
+        "BaseResourceType": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "readOnly": false
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                }
+            }
+        },
+        "BaseAccountResourceType": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "account_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "readOnly": false
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/BaseResourceType"
+                }
+            ]
+        },
+        "BaseTenantResourceType": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "tenant_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "readOnly": false
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/BaseAccountResourceType"
+                }
+            ]
+        },
+        "ObjectType": {
+            "type": "object",
+            "properties": {
+                "$ext": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "readOnly": true
+                    }
+                }
+            }
+        },
+        "SysType": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "readOnly": true
+                },
+                "label": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "school_year": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                }
+            }
+        },
+        "OrgSysType": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/SysType"
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "org_type"
+                    ],
+                    "properties": {
+                        "org_type": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "PersonSysType": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/SysType"
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "person_type"
+                    ],
+                    "properties": {
+                        "person_type": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "TermSysType": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/SysType"
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "term_type"
+                    ],
+                    "properties": {
+                        "term_type": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "RefType": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "readOnly": true
+                },
+                "type": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "label": {
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        },
+        "OrgRefType": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/RefType"
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "org_type"
+                    ],
+                    "properties": {
+                        "org_type": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "PersonRefType": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/RefType"
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "person_type"
+                    ],
+                    "properties": {
+                        "person_type": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "TermRefType": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/RefType"
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "term_type"
+                    ],
+                    "properties": {
+                        "term_type": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "MembershipRefType": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/RefType"
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "$membership"
+                    ],
+                    "properties": {
+                        "$membership": {
+                            "$ref": "#/definitions/RefType",
+                            "readOnly": true
+                        }
+                    }
+                }
+            ]
+        },
+        "OrgMembershipRefType": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/MembershipRefType"
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "org_type"
+                    ],
+                    "properties": {
+                        "org_type": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "PersonMembershipRefType": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/MembershipRefType"
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "person_type"
+                    ],
+                    "properties": {
+                        "person_type": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "NameType": {
+            "type": "object",
+            "properties": {
+                "last": {
+                    "type": "string"
+                },
+                "first": {
+                    "type": "string"
+                },
+                "middle": {
+                    "type": "string"
+                }
+            }
+        },
+        "AddressType": {
+            "type": "object",
+            "properties": {
+                "line1": {
+                    "type": "string"
+                },
+                "line2": {
+                    "type": "string"
+                },
+                "line3": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "postal_code": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                }
+            }
+        },
+        "Org": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ObjectType"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "$sys": {
+                            "$ref": "#/definitions/OrgSysType",
+                            "readOnly": true
+                        },
+                        "local_id": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "$parent": {
+                            "$ref": "#/definitions/OrgRefType",
+                            "readOnly": true
+                        },
+                        "$children": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/OrgRefType"
+                            },
+                            "readOnly": true
+                        },
+                        "$students": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/PersonMembershipRefType"
+                            },
+                            "readOnly": true
+                        },
+                        "$teachers": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/PersonMembershipRefType"
+                            },
+                            "readOnly": true
+                        }
+                    },
+                    "example": {
+                        "id": "2a4a2e06-7755-43bb-9766-4f398079ef8c",
+                        "name": "Kimono School District"
+                    }
+                }
+            ]
+        },
+        "OrgsResponse": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Org"
+                            },
+                            "readOnly": true
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/PagedDataResponseType"
+                }
+            ]
+        },
+        "OrgResponse": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "$ref": "#/definitions/Org"
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/SingleObjectResponseType"
+                }
+            ]
+        },
+        "Person": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ObjectType"
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "$sys"
+                    ],
+                    "properties": {
+                        "$sys": {
+                            "$ref": "#/definitions/PersonSysType",
+                            "readOnly": true
+                        },
+                        "local_id": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "state_id": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "name": {
+                            "$ref": "#/definitions/NameType",
+                            "readOnly": true
+                        },
+                        "address": {
+                            "$ref": "#/definitions/AddressType",
+                            "readOnly": true
+                        },
+                        "phone": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "email": {
+                            "type": "string",
+                            "format": "email",
+                            "readOnly": true
+                        },
+                        "sex": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "dob": {
+                            "type": "string",
+                            "format": "date",
+                            "readOnly": true
+                        },
+                        "aup": {
+                            "type": "boolean",
+                            "readOnly": true
+                        },
+                        "grad_year": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "$schools": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/OrgMembershipRefType"
+                            },
+                            "readOnly": true
+                        },
+                        "$sections": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/MembershipRefType"
+                            },
+                            "readOnly": true
+                        }
+                    }
+                }
+            ]
+        },
+        "PersonsResponse": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Person"
+                            },
+                            "readOnly": true
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/PagedDataResponseType"
+                }
+            ]
+        },
+        "Course": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ObjectType"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "$sys": {
+                            "$ref": "#/definitions/SysType",
+                            "readOnly": true
+                        },
+                        "local_id": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "title": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "description": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "$orgs": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/OrgRefType"
+                            },
+                            "readOnly": true
+                        },
+                        "$sections": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/RefType"
+                            },
+                            "readOnly": true
+                        }
+                    }
+                }
+            ]
+        },
+        "CoursesResponse": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Course"
+                            },
+                            "readOnly": true
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/PagedDataResponseType"
+                }
+            ]
+        },
+        "Section": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ObjectType"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "$sys": {
+                            "$ref": "#/definitions/SysType",
+                            "readOnly": true
+                        },
+                        "local_id": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "title": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "description": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "$terms": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/TermRefType"
+                            },
+                            "readOnly": true
+                        },
+                        "$course": {
+                            "$ref": "#/definitions/RefType",
+                            "readOnly": true
+                        },
+                        "$org": {
+                            "$ref": "#/definitions/OrgRefType",
+                            "readOnly": true
+                        },
+                        "$teachers": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/PersonMembershipRefType"
+                            },
+                            "readOnly": true
+                        },
+                        "$students": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/PersonMembershipRefType"
+                            },
+                            "readOnly": true
+                        }
+                    }
+                }
+            ]
+        },
+        "SectionsResponse": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Section"
+                            },
+                            "readOnly": true
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/PagedDataResponseType"
+                }
+            ]
+        },
+        "Term": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ObjectType"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "$sys": {
+                            "$ref": "#/definitions/TermSysType"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "description": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "start_date": {
+                            "type": "string",
+                            "format": "date",
+                            "readOnly": true
+                        },
+                        "end_date": {
+                            "type": "string",
+                            "format": "date",
+                            "readOnly": true
+                        },
+                        "status": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "$parent": {
+                            "$ref": "#/definitions/TermRefType",
+                            "readOnly": true
+                        },
+                        "$children": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/TermRefType"
+                            },
+                            "readOnly": true
+                        }
+                    }
+                }
+            ]
+        },
+        "TermsResponse": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Term"
+                            },
+                            "readOnly": true
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/PagedDataResponseType"
+                }
+            ]
+        },
+        "GradingCategory": {
+            "type": "object",
+            "properties": {
+                "$sys": {
+                    "$ref": "#/definitions/SysType"
+                }
+            }
+        },
+        "GradingCategorysResponse": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/GradingCategory"
+                            },
+                            "readOnly": true
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/PagedDataResponseType"
+                }
+            ]
+        },
+        "DataEvent": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/BaseTenantResourceType"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "type": "string",
+                            "enum": [
+                                "ADD",
+                                "UPDATE",
+                                "DELETE",
+                                "SET",
+                                "UNSET"
+                            ]
+                        },
+                        "object_type": {
+                            "type": "string"
+                        },
+                        "object_id": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "data": {
+                            "type": "object"
+                        },
+                        "changes": {
+                            "type": "object"
+                        }
+                    }
+
+                }
+            ]
+        },
+        "SyncEvent": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/BaseTenantResourceType"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "type": "string",
+                            "enum": [
+                                "SYNC_START",
+                                "SYNC_END"
+                            ]
+                        },
+                        "object_type": {
+                            "type": "string"
+                        },
+                        "object_id": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "origin": {
+                            "type": "string"
+                        }
+                    }
+
+                }
+            ]
+        },
+        "Task": {
+            "type": "object",
+            "properties": {
+                "schema": {
+                    "type": "string",
+                    "description": "TBD"
+                },
+                "sync_event": {
+                    "$ref": "#/definitions/SyncEvent"
+                },
+                "data_event": {
+                    "$ref": "#/definitions/DataEvent"
+                }
+            }
+        },
+        "TasksResponse": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Task"
+                            },
+                            "readOnly": true
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/PagedDataResponseType"
+                }
+            ]
+        },
+        "TaskResponse": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "$ref": "#/definitions/Task"
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/SingleObjectResponseType"
+                }
+            ]
+        },
+        "TaskAck": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "description": "Task processing status",
+                    "enum": [
+                        "success",
+                        "error",
+                        "retry",
+                        "reauthenticate"
+                    ]
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Optional message to record and display in Kimono."
+                },
+                "error": {
+                    "type": "object",
+                    "$ref": "#/definitions/ErrorType",
+                    "description": "Optional error information to record and display in Kimono."
+                },
+                "params": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Optional key/value pairs to record in Kimono. Some Task types prescribe parameters be returned when a Task is acknowledged."
+                }
+            }
+        },
+        "TopicId": {
+            "type": "string"
+        },
+        "IngestionType": {
+            "type": "string",
+            "enum": [
+                "unspecified",
+                "collection",
+                "bulk_load",
+                "event_bundle",
+                "bulk_attr_change",
+                "mirror"
+            ]
+        },
+        "IngestionState": {
+            "type": "string",
+            "enum": [
+                "unspecified",
+                "preparing",
+                "scheduled",
+                "executing",
+                "success",
+                "failed",
+                "cancelled",
+                "timeout"
+            ]
+        },
+        "Ingestion": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/BaseTenantResourceType"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "tenant_id": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "session_token": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "$ref": "#/definitions/IngestionType"
+                        },
+                        "topics": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/TopicId"
+                            }
+                        },
+                        "state": {
+                            "$ref": "#/definitions/IngestionState"
+                        }
+                    }
+                }
+            ]
+        },
+        "IngestionsResponse": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Ingestion"
+                            },
+                            "readOnly": true
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/PagedDataResponseType"
+                }
+            ]
+        },
+        "IngestionResponse": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "$ref": "#/definitions/Ingestion"
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/SingleObjectResponseType"
+                }
+            ]
+        }
+    },
+    "parameters": {
+        "PageParam": {
+            "name": "page",
+            "in": "query",
+            "description": "Specify the page number (defaults to 0)",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+        },
+        "PageSizeParam": {
+            "name": "page_size",
+            "in": "query",
+            "description": "Specify the page_size (defaults to the maximum page size)",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+        }
+    },
+    "paths": {
+        "/tasks": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "operationId": "listTasks",
+                "summary": "List Tasks",
+                "description": "Get the next batch of Tasks for the authenticated actor. The number of Tasks returned is determined by Kimono and may change from time to time. See [Tasks](doc:interop-data-api-tasks) for details.",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tasks response",
+                        "schema": {
+                            "$ref": "#/definitions/TasksResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks/{id}/ack": {
+            "put": {
+                "tags": [
+                    "Tasks"
+                ],
+                "operationId": "acknowledgeTask",
+                "summary": "Acknowledge Task",
+                "description": "Each Task that is returned from `listTasks` must be acknowledged to remove it from the Task Queue. If a Task is not acknowledged in a timely fashion Kimono may consider it to have timed-out and will return it in the next `listTasks` response for an Integration tenant. See [Tasks](doc:interop-data-api-tasks) for details.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the Task to acknowledge",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "name": "TaskAck",
+                        "in": "body",
+                        "description": "Parameters describing how to acknowledge the Task",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/TaskAck"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Task acknowledged successfully"
+                    },
+                    "404": {
+                        "description": "Task not found"
+                    }
+                }
+            }
+        },
+        "/rostering/orgs": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listOrgs",
+                "summary": "List all Orgs",
+                "description": "",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Orgs response",
+                        "schema": {
+                            "$ref": "#/definitions/OrgsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/leas": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listLEAs",
+                "summary": "List all LEA-type Orgs",
+                "description": "",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Orgs response",
+                        "schema": {
+                            "$ref": "#/definitions/OrgsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/schools": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listSchools",
+                "summary": "List all School-type Orgs",
+                "description": "",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Orgs response",
+                        "schema": {
+                            "$ref": "#/definitions/OrgsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/orgs/{id}": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "findOrg",
+                "summary": "Find an Org by $sys.id",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "$sys.id of the object",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Org response",
+                        "schema": {
+                            "$ref": "#/definitions/OrgResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Org not found"
+                    }
+                }
+            }
+        },
+        "/rostering/orgs/{id}/students": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listStudentsForOrg",
+                "summary": "List Students that are members of an Org",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "$sys.id of the Org",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of Persons",
+                        "schema": {
+                            "$ref": "#/definitions/PersonsResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Org not found"
+                    }
+                }
+            }
+        },
+        "/rostering/orgs/{id}/teachers": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listTeachersForOrg",
+                "summary": "List Teachers that are members of an Org",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "$sys.id of the Org",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of Persons",
+                        "schema": {
+                            "$ref": "#/definitions/PersonsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/orgs/{id}/courses": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listCoursesForOrg",
+                "summary": "List Courses that belong to an Org",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "$sys.id of the Org",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of Orgs",
+                        "schema": {
+                            "$ref": "#/definitions/CoursesResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/orgs/{id}/sections": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listSectionsForOrg",
+                "summary": "List Sections that belong to an Org",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "$sys.id of the Org",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of Sections",
+                        "schema": {
+                            "$ref": "#/definitions/SectionsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/orgs/{id}/terms": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listTermsForOrg",
+                "summary": "List Terms that belong to an Org",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "$sys.id of the Org",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Terms response",
+                        "schema": {
+                            "$ref": "#/definitions/TermsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/leas/{id}": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "findLEA",
+                "summary": "Find an LEA-type Org by $sys.id",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "$sys.id of the LEA",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Org response",
+                        "schema": {
+                            "$ref": "#/definitions/Org"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/persons": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listPersons",
+                "summary": "Get all Persons",
+                "description": "",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of Person",
+                        "schema": {
+                            "$ref": "#/definitions/PersonsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/students": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listStudents",
+                "summary": "List all Student-type Persons",
+                "description": "",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of Person",
+                        "schema": {
+                            "$ref": "#/definitions/PersonsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/teachers": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listTeachers",
+                "summary": "List all Teacher-type Persons",
+                "description": "",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of Person",
+                        "schema": {
+                            "$ref": "#/definitions/PersonsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/persons/{id}": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "findPerson",
+                "summary": "Find a Person by $sys.id",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "$sys.id of the Person to find",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Person response",
+                        "schema": {
+                            "$ref": "#/definitions/Person"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/courses": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listCourses",
+                "summary": "List all Courses",
+                "description": "",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of Course",
+                        "schema": {
+                            "$ref": "#/definitions/CoursesResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/courses/{id}": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "findCourse",
+                "summary": "Find a Course by $sys.id",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "$sys.id of the Course to find",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Course response",
+                        "schema": {
+                            "$ref": "#/definitions/Course"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/sections": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listSections",
+                "summary": "List all Sections",
+                "description": "",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of Section",
+                        "schema": {
+                            "$ref": "#/definitions/SectionsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/sections/{id}": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "findSection",
+                "summary": "Find a Section by $sys.id",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "$sys.id of the Section to find",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Section response",
+                        "schema": {
+                            "$ref": "#/definitions/Section"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/terms": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "listTerms",
+                "summary": "List all Terms",
+                "description": "",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of Terms",
+                        "schema": {
+                            "$ref": "#/definitions/TermsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rostering/terms/{id}": {
+            "get": {
+                "tags": [
+                    "Rostering"
+                ],
+                "operationId": "findTerm",
+                "summary": "Find a Term by $sys.id",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "$sys.id of the Term to find",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Term response",
+                        "schema": {
+                            "$ref": "#/definitions/Term"
+                        }
+                    }
+                }
+            }
+        },
+        "/grades/categories": {
+            "get": {
+                "tags": [
+                    "Grades"
+                ],
+                "operationId": "listGradingCategories",
+                "summary": "List all Grading Categories",
+                "description": "",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GradingCategory response",
+                        "schema": {
+                            "$ref": "#/definitions/GradingCategorysResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ingestions": {
+            "get": {
+                "tags": [
+                    "Ingestions"
+                ],
+                "operationId": "listIngestions",
+                "summary": "List Ingestions",
+                "description": "Get a list of Ingestions. By default only incomplete Ingestions from the Ingestion Queue are returned.",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSizeParam"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ingestions response",
+                        "schema": {
+                            "$ref": "#/definitions/IngestionsResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Ingestions"
+                ],
+                "operationId": "createIngestion",
+                "summary": "Create an Ingestion",
+                "description": "Create an Ingestion. Use the resulting session_token to send Load messages containing raw data to be transformed by the Ingestion Pipeline.",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Ingestion to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Ingestion"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/IngestionResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ingestions/{id}": {
+            "get": {
+                "tags": [
+                    "Ingestions"
+                ],
+                "operationId": "findIngestion",
+                "summary": "Find an Ingestion by id",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the Ingestion to find",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ingestion response",
+                        "schema": {
+                            "$ref": "#/definitions/IngestionResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Ingestions"
+                ],
+                "operationId": "cancelIngestion",
+                "summary": "Cancel an Ingestion by id",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the Ingestion to cancel",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ingestion response",
+                        "schema": {
+                            "$ref": "#/definitions/Ingestion"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

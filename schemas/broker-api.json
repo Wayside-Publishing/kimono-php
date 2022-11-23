@@ -1,0 +1,613 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2.0",
+    "title": "Broker API",
+    "description": "Broker APIs provide access to Kimono Broker resources and operations"
+  },
+  "basePath": "/v2/broker",
+  "host": "api.us2.kimonocloud.com",
+  "schemes": [
+    "https"
+  ],
+  "securityDefinitions": { 
+    "Actor": {
+      "type": "oauth2",
+      "flow": "application",
+      "tokenUrl": "https://api.us2.kimonocloud.com/oauth/token"
+    }
+  },
+  "security": [
+    { "Actor": [ ] }
+  ],  
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],  
+  "definitions": {
+    "BaseResourceType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "readOnly": true
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
+    },
+    "ErrorType": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "description": "Transport-layer status code"
+        },
+        "code": {
+          "type": "string",
+          "description": "Application-layer error code"
+        },
+        "message": {
+          "type": "string",
+          "description": "Error message"
+        },
+        "ext_message": {
+          "type": "string",
+          "description": "Extended error message"
+        },
+        "details": {
+          "type": "string",
+          "description": "Details that may assist in diagnosing this error"
+        }
+      }
+    },
+    "PagedDataResponseType": {
+      "type": "object",
+      "properties": {
+        "paging": {
+          "type": "object",
+          "properties": {
+            "next": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "SingleObjectResponseType": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "$ref": "#/definitions/ErrorType"
+        }
+      }
+    },    
+    "Message": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "readOnly": true
+        },
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "MessagesResponse": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Message"
+              },
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/PagedDataResponseType"
+        }
+      ]
+    },   
+    "MessageResponse": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "data": {
+              "$ref": "#/definitions/Message"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/SingleObjectResponseType"
+        }
+      ]
+    },     
+    "MessageAck": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "disposition": {
+          "type": "string",
+          "enum": [
+            "success",
+            "warning",
+            "error",
+            "retry"
+          ]
+        },
+        "errorInfo": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "activityInfo": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      }
+    },
+    "Model": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/BaseResourceType"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "ModelsResponse": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Model"
+              },
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/PagedDataResponseType"
+        }
+      ]
+    },   
+    "Vocabulary": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/BaseResourceType"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "VocabularysResponse": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Vocabulary"
+              },
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/PagedDataResponseType"
+        }
+      ]
+    }
+  },
+  "parameters": {
+    "PageParam": {
+      "name": "page",
+      "in": "query",
+      "description": "Specify the page number (defaults to 0)",
+      "required": false,
+      "type": "integer",
+      "format": "int32"
+    },
+    "PageSizeParam": {
+      "name": "page_size",
+      "in": "query",
+      "description": "Specify the page_size (defaults to the maximum page size)",
+      "required": false,
+      "type": "integer",
+      "format": "int32"
+    }
+  },
+  "paths": {
+    "/messages": {
+      "get": {
+        "tags": [
+          "Messages"
+        ],
+        "operationId": "listMessages",
+        "summary": "List Messages",
+        "description": "Get the next batch of Messages for the authenticated actor. The number of Messages returned is determined by Kimono and may change from time to time. See [Messages](doc:broker-api-messages) for details.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PageParam"
+          },
+          {
+            "$ref": "#/parameters/PageSizeParam"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Message"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Messages"
+        ],
+        "operationId": "sendMessage",
+        "summary": "Send Message",
+        "description": "Send a Message",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "message",
+            "in": "body",
+            "description": "The JSON-encoded Message to send",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/MessageResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ErrorType"
+            }
+          }
+        }
+      }
+    },
+    "/messages/{id}/ack": {
+      "put": {
+        "tags": [
+          "Messages"
+        ],
+        "operationId": "acknowledgeMessage",
+        "summary": "Acknowledge Message",
+        "description": "Each Message that is returned from `listMessages` must be acknowledged to remove it from the Message Queue. If a Message is not acknowledged in a timely fashion Kimono may consider it to have timed-out and will return it in the next `listMessages` response for an actor. See [Messages](doc:broker-api-messages) for details.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the Message to acknowledge",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "MessageAck",
+            "in": "body",
+            "description": "Parameters describing how to acknowledge the Message",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/MessageAck"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Message acknowledged successfully"
+          },
+          "404": {
+            "description": "Message not found"
+          }
+        }
+      }
+    },
+    "/models": {
+      "get": {
+        "tags": [
+          "Vocabulary"
+        ],
+        "operationId": "listModels",
+        "summary": "List Data Models",
+        "description": "Get a list of all defined Data Models",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PageParam"
+          },
+          {
+            "$ref": "#/parameters/PageSizeParam"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Models response",
+            "schema": {
+              "$ref": "#/definitions/ModelsResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Vocabulary"
+        ],
+        "operationId": "createModel",
+        "summary": "Create Data Models",
+        "description": "Create a Data Model",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/ModelsResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ErrorType"
+            }
+          }          
+        }
+      }
+    },
+    "/models/{id}": {
+      "get": {
+        "tags": [
+          "Vocabulary"
+        ],
+        "operationId": "findModel",
+        "summary": "Get a Data Model by id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the Model to find",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Model response",
+            "schema": {
+              "$ref": "#/definitions/Model"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Vocabulary"
+        ],
+        "operationId": "updateModel",
+        "summary": "Update the properties of a Data Model",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the Model",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Model response",
+            "schema": {
+              "$ref": "#/definitions/Model"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Vocabulary"
+        ],
+        "operationId": "deleteModel",
+        "summary": "Delete a Data Model",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the Model",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/vocabularies": {
+      "get": {
+        "tags": [
+          "Vocabulary"
+        ],
+        "operationId": "listVocabularies",
+        "summary": "List Vocabularies",
+        "description": "Get a list of all defined Vocabularies",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PageParam"
+          },
+          {
+            "$ref": "#/parameters/PageSizeParam"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Vocabularies response",
+            "schema": {
+              "$ref": "#/definitions/VocabularysResponse"
+            }
+          }
+        }
+      }
+    },
+    "/vocabulary/{id}": {
+      "get": {
+        "tags": [
+          "Vocabulary"
+        ],
+        "operationId": "findVocabulary",
+        "summary": "Get a Vocabulary by id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the Vocabulary to find",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Models response",
+            "schema": {
+              "$ref": "#/definitions/ModelsResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Vocabulary"
+        ],
+        "operationId": "updateVocabulary",
+        "summary": "Update the properties of a Vocabulary",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the Vocabulary",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Vocabularys response",
+            "schema": {
+              "$ref": "#/definitions/VocabularysResponse"
+            }
+          }
+        }
+      }
+
+    }
+
+  }
+}

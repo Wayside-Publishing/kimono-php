@@ -1,0 +1,351 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2.0",
+    "title": "Platform API",
+    "description": "Platform APIs provide access to core Kimono Platform resources and operations such as Accounts, Users, and Clouds."
+  },
+  "basePath": "/v2/platform",
+  "host": "api.us2.kimonocloud.com",
+  "schemes": [
+    "https"
+  ],
+  "securityDefinitions": { 
+    "Vendor": {
+      "type": "basic"
+    }
+  },
+  "security": [
+    { "Vendor": [ ] }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],  
+  "definitions": {
+    "BaseResourceType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "readOnly": true
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
+    },
+    "ErrorType": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "description": "Transport-layer status code"
+        },
+        "code": {
+          "type": "string",
+          "description": "Application-layer error code"
+        },
+        "message": {
+          "type": "string",
+          "description": "Error message"
+        },
+        "ext_message": {
+          "type": "string",
+          "description": "Extended error message"
+        },
+        "details": {
+          "type": "string",
+          "description": "Details that may assist in diagnosing this error"
+        }
+      }
+    },
+    "PagedDataResponseType": {
+      "type": "object",
+      "properties": {
+        "paging": {
+          "type": "object",
+          "properties": {
+            "next": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }, 
+    "SingleObjectResponseType": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "$ref": "#/definitions/ErrorType"
+        }
+      }
+    },    
+    "AccountType": {
+      "type": "string",
+      "enum": [
+        "kimono",
+        "education_agency",
+        "developer",
+        "personal",
+        "state_education_agency",
+        "partner",
+        "higher_ed"      
+      ]
+    },
+    "Account": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/AccountType"
+        }
+      }
+    },
+    "AccountsResponse": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Account"
+              },
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/PagedDataResponseType"
+        }
+      ]
+    },   
+    "AccountResponse": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "data": {
+              "$ref": "#/definitions/Account"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/SingleObjectResponseType"
+        }
+      ]
+    }
+  },
+  "parameters": {
+    "PageParam": {
+      "name": "page",
+      "in": "query",
+      "description": "Specify the page number (defaults to 0)",
+      "required": false,
+      "type": "integer",
+      "format": "int32"
+    },
+    "PageSizeParam": {
+      "name": "page_size",
+      "in": "query",
+      "description": "Specify the page_size (defaults to the maximum page size)",
+      "required": false,
+      "type": "integer",
+      "format": "int32"
+    }
+  },
+  "paths": {
+    "/accounts": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "operationId": "listAccounts",
+        "summary": "Get Accounts",
+        "description": "Get a list of Accounts",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PageParam"
+          },
+          {
+            "$ref": "#/parameters/PageSizeParam"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Accounts response",
+            "schema": {
+              "$ref": "#/definitions/AccountsResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "operationId": "createAccount",
+        "summary": "Create an Account",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Account to create",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Account"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AccountResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ErrorType"
+            }
+          }          
+        }
+      }
+    },
+    "/accounts/self": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "operationId": "findOwnAccount",
+        "summary": "Find your Account",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Account response",
+            "schema": {
+              "$ref": "#/definitions/AccountResponse"
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{id}": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "operationId": "findAccount",
+        "summary": "Find an Account",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the object",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],        
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Account response",
+            "schema": {
+              "$ref": "#/definitions/AccountResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Accounts"
+        ],
+        "operationId": "updateAccount",
+        "summary": "Update an Account",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the object",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Account properties to update",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Account"
+            }
+          }
+        ],        
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Accounts"
+        ],
+        "operationId": "deleteAccount",
+        "summary": "Delete an Account",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the Account to delete",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        }    
+      }
+    }
+  }
+}

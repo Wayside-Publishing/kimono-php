@@ -1,0 +1,34 @@
+{
+    "name": "wayside-publishing/kimono-php",
+    "type": "library",
+    "description": "A basic sdk for working w/ Elevate Data Sync APIs",
+    "keywords": ["Kimono", "KimonoCloud"],
+    "license": "BSD-3-Clause",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Alex Tretyakov",
+            "email": "atretyakov@waysidepublishing.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.5.0",
+        "kamermans/guzzle-oauth2-subscriber": "^v1.0.12"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4" : {
+            "Kimono\\" : "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4" : {
+        }
+    },
+    "extra": {
+        "branch-alias": {
+        }
+    }
+}
