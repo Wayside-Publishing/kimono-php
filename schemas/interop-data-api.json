@@ -802,6 +802,80 @@
                 }
             ]
         },
+        "PersonOrgMembership": {
+            "properties": {
+                "$sys": {
+                    "$ref": "#/definitions/SysType"
+                },
+                "$org": {
+                    "$ref": "#/definitions/OrgRefType",
+                    "readOnly": true
+                },
+                "$person": {
+                    "$ref": "#/definitions/PersonRefType",
+                    "readOnly": true
+                },
+                "status": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "grade": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "primary": {
+                    "type": "boolean",
+                    "readOnly": true
+                },
+                "start_date": {
+                    "type": "string",
+                    "format": "date",
+                    "readOnly": true
+                },
+                "end_date": {
+                    "type": "string",
+                    "format": "date",
+                    "readOnly": true
+                }
+            }
+        },
+        "PersonSectionMembership": {
+            "properties": {
+                "$sys": {
+                    "$ref": "#/definitions/SysType"
+                },
+                "$section": {
+                    "$ref": "#/definitions/RefType",
+                    "readOnly": true
+                },
+                "$person": {
+                    "$ref": "#/definitions/PersonRefType",
+                    "readOnly": true
+                },
+                "status": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "grade": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "primary": {
+                    "type": "boolean",
+                    "readOnly": true
+                },
+                "start_date": {
+                    "type": "string",
+                    "format": "date",
+                    "readOnly": true
+                },
+                "end_date": {
+                    "type": "string",
+                    "format": "date",
+                    "readOnly": true
+                }
+            }
+        },
         "DataEvent": {
             "allOf": [
                 {
