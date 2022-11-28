@@ -8,9 +8,9 @@ Name | Type | Description | Notes
 **local_id** | **string** |  | [optional] [readonly]
 **title** | **string** |  | [optional] [readonly]
 **description** | **string** |  | [optional] [readonly]
-**terms** | [**\Kimono\Model\TermRefType[]**](TermRefType.md) |  | [optional] [readonly]
+**terms** | [**\Kimono\Model\Term[]**](Term.md) |  | [optional] [readonly]
 **course** | [**\Kimono\Model\Course**](Course.md) |  | [optional]
-**org** | [**\Kimono\Model\OrgRefType**](OrgRefType.md) |  | [optional]
+**org** | [**\Kimono\Model\Org**](Org.md) |  | [optional]
 **teachers** | [**\Kimono\Model\PersonMembershipRefType[]**](PersonMembershipRefType.md) |  | [optional] [readonly]
 **students** | [**\Kimono\Model\PersonMembershipRefType[]**](PersonMembershipRefType.md) |  | [optional] [readonly]
 

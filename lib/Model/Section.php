@@ -62,9 +62,9 @@ class Section implements ModelInterface, ArrayAccess, \JsonSerializable
         'local_id' => 'string',
         'title' => 'string',
         'description' => 'string',
-        'terms' => '\Kimono\Model\TermRefType[]',
+        'terms' => '\Kimono\Model\Term[]',
         'course' => '\Kimono\Model\Course',
-        'org' => '\Kimono\Model\OrgRefType',
+        'org' => '\Kimono\Model\Org',
         'teachers' => '\Kimono\Model\PersonMembershipRefType[]',
         'students' => '\Kimono\Model\PersonMembershipRefType[]'
     ];
@@ -490,7 +490,7 @@ class Section implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets terms
      *
-     * @return \Kimono\Model\TermRefType[]|null
+     * @return \Kimono\Model\Term[]|null
      */
     public function getTerms()
     {
@@ -500,7 +500,7 @@ class Section implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets terms
      *
-     * @param \Kimono\Model\TermRefType[]|null $terms terms
+     * @param \Kimono\Model\Term[]|null $terms terms
      *
      * @return self
      */
@@ -544,7 +544,7 @@ class Section implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets org
      *
-     * @return \Kimono\Model\OrgRefType|null
+     * @return \Kimono\Model\Org|null
      */
     public function getOrg()
     {
@@ -554,7 +554,7 @@ class Section implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets org
      *
-     * @param \Kimono\Model\OrgRefType|null $org org
+     * @param \Kimono\Model\Org|null $org org
      *
      * @return self
      */
