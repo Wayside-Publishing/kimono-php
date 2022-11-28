@@ -58,8 +58,8 @@ class PersonOrgMembership implements ModelInterface, ArrayAccess, \JsonSerializa
       */
     protected static $openAPITypes = [
         'sys' => '\Kimono\Model\SysType',
-        'org' => '\Kimono\Model\OrgRefType',
-        'person' => '\Kimono\Model\PersonRefType',
+        'org' => '\Kimono\Model\Org',
+        'person' => '\Kimono\Model\Person',
         'status' => 'string',
         'grade' => 'string',
         'primary' => 'bool',
@@ -396,7 +396,7 @@ class PersonOrgMembership implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets org
      *
-     * @return \Kimono\Model\OrgRefType|null
+     * @return \Kimono\Model\Org|null
      */
     public function getOrg()
     {
@@ -406,7 +406,7 @@ class PersonOrgMembership implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets org
      *
-     * @param \Kimono\Model\OrgRefType|null $org org
+     * @param \Kimono\Model\Org|null $org org
      *
      * @return self
      */
@@ -423,7 +423,7 @@ class PersonOrgMembership implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets person
      *
-     * @return \Kimono\Model\PersonRefType|null
+     * @return \Kimono\Model\Person|null
      */
     public function getPerson()
     {
@@ -433,7 +433,7 @@ class PersonOrgMembership implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets person
      *
-     * @param \Kimono\Model\PersonRefType|null $person person
+     * @param \Kimono\Model\Person|null $person person
      *
      * @return self
      */

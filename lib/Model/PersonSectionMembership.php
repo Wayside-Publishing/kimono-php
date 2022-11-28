@@ -58,8 +58,8 @@ class PersonSectionMembership implements ModelInterface, ArrayAccess, \JsonSeria
       */
     protected static $openAPITypes = [
         'sys' => '\Kimono\Model\SysType',
-        'section' => '\Kimono\Model\RefType',
-        'person' => '\Kimono\Model\PersonRefType',
+        'section' => '\Kimono\Model\Section',
+        'person' => '\Kimono\Model\Person',
         'status' => 'string',
         'grade' => 'string',
         'primary' => 'bool',
@@ -396,7 +396,7 @@ class PersonSectionMembership implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets section
      *
-     * @return \Kimono\Model\RefType|null
+     * @return \Kimono\Model\Section|null
      */
     public function getSection()
     {
@@ -406,7 +406,7 @@ class PersonSectionMembership implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets section
      *
-     * @param \Kimono\Model\RefType|null $section section
+     * @param \Kimono\Model\Section|null $section section
      *
      * @return self
      */
@@ -423,7 +423,7 @@ class PersonSectionMembership implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets person
      *
-     * @return \Kimono\Model\PersonRefType|null
+     * @return \Kimono\Model\Person|null
      */
     public function getPerson()
     {
@@ -433,7 +433,7 @@ class PersonSectionMembership implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets person
      *
-     * @param \Kimono\Model\PersonRefType|null $person person
+     * @param \Kimono\Model\Person|null $person person
      *
      * @return self
      */

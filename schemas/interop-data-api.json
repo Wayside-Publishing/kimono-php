@@ -808,16 +808,15 @@
                     "$ref": "#/definitions/SysType"
                 },
                 "$org": {
-                    "$ref": "#/definitions/OrgRefType",
+                    "$ref": "#/definitions/Org",
                     "readOnly": true
                 },
                 "$person": {
-                    "$ref": "#/definitions/PersonRefType",
+                    "$ref": "#/definitions/Person",
                     "readOnly": true
                 },
                 "status": {
                     "type": "string",
-                    "readOnly": true,
                     "enum": [
                         "Historical",
                         "Active",
@@ -851,16 +850,15 @@
                     "$ref": "#/definitions/SysType"
                 },
                 "$section": {
-                    "$ref": "#/definitions/RefType",
+                    "$ref": "#/definitions/Section",
                     "readOnly": true
                 },
                 "$person": {
-                    "$ref": "#/definitions/PersonRefType",
+                    "$ref": "#/definitions/Person",
                     "readOnly": true
                 },
                 "status": {
                     "type": "string",
-                    "readOnly": true,
                     "enum": [
                         "Historical",
                         "Active",
