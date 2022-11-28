@@ -63,7 +63,7 @@ class Section implements ModelInterface, ArrayAccess, \JsonSerializable
         'title' => 'string',
         'description' => 'string',
         'terms' => '\Kimono\Model\TermRefType[]',
-        'course' => '\Kimono\Model\RefType',
+        'course' => '\Kimono\Model\Course',
         'org' => '\Kimono\Model\OrgRefType',
         'teachers' => '\Kimono\Model\PersonMembershipRefType[]',
         'students' => '\Kimono\Model\PersonMembershipRefType[]'
@@ -517,7 +517,7 @@ class Section implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets course
      *
-     * @return \Kimono\Model\RefType|null
+     * @return \Kimono\Model\Course|null
      */
     public function getCourse()
     {
@@ -527,7 +527,7 @@ class Section implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets course
      *
-     * @param \Kimono\Model\RefType|null $course course
+     * @param \Kimono\Model\Course|null $course course
      *
      * @return self
      */

@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **title** | **string** |  | [optional] [readonly]
 **description** | **string** |  | [optional] [readonly]
 **terms** | [**\Kimono\Model\TermRefType[]**](TermRefType.md) |  | [optional] [readonly]
-**course** | [**\Kimono\Model\RefType**](RefType.md) |  | [optional]
+**course** | [**\Kimono\Model\Course**](Course.md) |  | [optional]
 **org** | [**\Kimono\Model\OrgRefType**](OrgRefType.md) |  | [optional]
 **teachers** | [**\Kimono\Model\PersonMembershipRefType[]**](PersonMembershipRefType.md) |  | [optional] [readonly]
 **students** | [**\Kimono\Model\PersonMembershipRefType[]**](PersonMembershipRefType.md) |  | [optional] [readonly]

@@ -664,7 +664,7 @@
                             "readOnly": true
                         },
                         "$course": {
-                            "$ref": "#/definitions/RefType",
+                            "$ref": "#/definitions/Course",
                             "readOnly": true
                         },
                         "$org": {
