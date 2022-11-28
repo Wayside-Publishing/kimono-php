@@ -160,5 +160,3 @@ lib/Model/TermsResponse.php
 lib/Model/TermsResponseAllOf.php
 lib/ObjectSerializer.php
 phpunit.xml.dist
-test/Model/PersonOrgMembershipTest.php
-test/Model/PersonSectionMembershipTest.php

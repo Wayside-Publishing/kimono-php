@@ -270,6 +270,25 @@ class PersonOrgMembership implements ModelInterface, ArrayAccess, \JsonSerializa
         return self::$openAPIModelName;
     }
 
+    public const STATUS_HISTORICAL = 'Historical';
+    public const STATUS_ACTIVE = 'Active';
+    public const STATUS_FUTURE = 'Future';
+    public const STATUS_INACTIVE = 'Inactive';
+
+    /**
+     * Gets allowable values of the enum
+     *
+     * @return string[]
+     */
+    public function getStatusAllowableValues()
+    {
+        return [
+            self::STATUS_HISTORICAL,
+            self::STATUS_ACTIVE,
+            self::STATUS_FUTURE,
+            self::STATUS_INACTIVE,
+        ];
+    }
 
     /**
      * Associative array for storing property values
@@ -322,6 +341,15 @@ class PersonOrgMembership implements ModelInterface, ArrayAccess, \JsonSerializa
     public function listInvalidProperties()
     {
         $invalidProperties = [];
+
+        $allowedValues = $this->getStatusAllowableValues();
+        if (!is_null($this->container['status']) && !in_array($this->container['status'], $allowedValues, true)) {
+            $invalidProperties[] = sprintf(
+                "invalid value '%s' for 'status', must be one of '%s'",
+                $this->container['status'],
+                implode("', '", $allowedValues)
+            );
+        }
 
         return $invalidProperties;
     }
@@ -440,6 +468,16 @@ class PersonOrgMembership implements ModelInterface, ArrayAccess, \JsonSerializa
     {
         if (is_null($status)) {
             throw new \InvalidArgumentException('non-nullable status cannot be null');
+        }
+        $allowedValues = $this->getStatusAllowableValues();
+        if (!in_array($status, $allowedValues, true)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    "Invalid value '%s' for 'status', must be one of '%s'",
+                    $status,
+                    implode("', '", $allowedValues)
+                )
+            );
         }
         $this->container['status'] = $status;
 

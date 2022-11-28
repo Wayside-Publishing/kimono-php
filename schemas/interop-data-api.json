@@ -817,7 +817,13 @@
                 },
                 "status": {
                     "type": "string",
-                    "readOnly": true
+                    "readOnly": true,
+                    "enum": [
+                        "Historical",
+                        "Active",
+                        "Future",
+                        "Inactive"
+                    ]
                 },
                 "grade": {
                     "type": "string",
@@ -854,7 +860,13 @@
                 },
                 "status": {
                     "type": "string",
-                    "readOnly": true
+                    "readOnly": true,
+                    "enum": [
+                        "Historical",
+                        "Active",
+                        "Future",
+                        "Inactive"
+                    ]
                 },
                 "grade": {
                     "type": "string",
