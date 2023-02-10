@@ -282,6 +282,28 @@ class DataEvent implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
+    public const ACTION_ADD = 'ADD';
+    public const ACTION_UPDATE = 'UPDATE';
+    public const ACTION_DELETE = 'DELETE';
+    public const ACTION_SET = 'SET';
+    public const ACTION__UNSET = 'UNSET';
+
+    /**
+     * Gets allowable values of the enum
+     *
+     * @return string[]
+     */
+    public function getActionAllowableValues()
+    {
+        return [
+            self::ACTION_ADD,
+            self::ACTION_UPDATE,
+            self::ACTION_DELETE,
+            self::ACTION_SET,
+            self::ACTION__UNSET,
+        ];
+    }
+
     /**
      * Associative array for storing property values
      *
@@ -334,7 +356,18 @@ class DataEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function listInvalidProperties()
     {
-        return [];
+        $invalidProperties = [];
+
+//        $allowedValues = $this->getActionAllowableValues();
+//        if (!is_null($this->container['action']) && !in_array($this->container['action'], $allowedValues, true)) {
+//            $invalidProperties[] = sprintf(
+//                "invalid value '%s' for 'action', must be one of '%s'",
+//                $this->container['action'],
+//                implode("', '", $allowedValues)
+//            );
+//        }
+
+        return $invalidProperties;
     }
 
     /**
@@ -503,9 +536,19 @@ class DataEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function setAction($action)
     {
-        if (is_null($action)) {
-            throw new \InvalidArgumentException('non-nullable action cannot be null');
-        }
+//        if (is_null($action)) {
+//            throw new \InvalidArgumentException('non-nullable action cannot be null');
+//        }
+//        $allowedValues = $this->getActionAllowableValues();
+//        if (!in_array($action, $allowedValues, true)) {
+//            throw new \InvalidArgumentException(
+//                sprintf(
+//                    "Invalid value '%s' for 'action', must be one of '%s'",
+//                    $action,
+//                    implode("', '", $allowedValues)
+//                )
+//            );
+//        }
 
         $this->container['action'] = $action;
 
